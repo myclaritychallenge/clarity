@@ -15,7 +15,7 @@ from clarity.enhancer.nalr import NALR
 from clarity.utils.audiogram import Audiogram, Listener
 from recipes.icassp_2023.baseline.evaluate import make_scene_listener_list
 
-from df.enhance import init_df, load_audio
+from df.enhance import init_df, load_audio, save_audio
 from df.enhance import enhance as enhanceDFN
 
 logger = logging.getLogger(__name__)
@@ -79,9 +79,11 @@ def enhance(cfg: DictConfig) -> None:
         # pylint: disable=unused-variable
         listener = listener_dict[listener_id]  # noqa: F841
 
-        wavfile.write(
-            enhanced_folder / f"{scene}_{listener_id}_enhanced.wav", df_state.sr(), enhanced
-        )
+        # wavfile.write(
+        #     enhanced_folder / f"S00001_mix_CH1_enhanced.wav", df_state.sr(), enhanced
+        # )
+
+        save_audio(enhanced_folder / f"{scene}_{listener_id}_enhanced.wav", enhanced, df_state.sr())
 
         # Apply the baseline NALR amplification
 
@@ -96,11 +98,15 @@ def enhance(cfg: DictConfig) -> None:
         if cfg.soft_clip:
             amplified = np.tanh(amplified)
 
-        wavfile.write(
-            amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
-            df_state.sr(),
-            amplified.astype(np.float32),
-        )
+        # wavfile.write(
+        #     amplified_folder / f"{scene}_{listener_id}_HA-output.wav",
+        #     df_state.sr(),
+        #     amplified.astype(np.float32),
+        # )
+
+        save_audio(amplified_folder / f"{scene}_{listener_id}_HA-output.wav", enhanced, df_state.sr())
+
+        break
 
 
 # pylint: disable=no-value-for-parameter

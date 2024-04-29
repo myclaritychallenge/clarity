@@ -1,4 +1,4 @@
-task: ??? # This can be set to 'task1', 'task2' or 'task3'
+task: task2 # This can be set to 'task1', 'task2' or 'task3'
 
 path:
   root: ??? # root folder for clarity data
@@ -23,7 +23,7 @@ compressor:
 soft_clip: True
 
 evaluate:
-  set_random_seed: True
+  set_random_seed: False
   small_test: False
   first_scene: 0
   n_scenes: 0
