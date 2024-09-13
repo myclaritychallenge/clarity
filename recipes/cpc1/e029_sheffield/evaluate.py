@@ -84,23 +84,23 @@ def read_data(pred_json: Path, label_json: Path):
     return np.array(prediction), np.array(label)
 
 
-@hydra.main(config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config", version_base=None)
 def run(cfg: DictConfig) -> None:
     if cfg.cpc1_track == "open":
         track = "_indep"
     elif cfg.cpc1_track == "closed":
         track = ""
     else:
-        logger.error("cpc1_track has to be closed or open")
+        raise ValueError("cpc1_track has to be closed or open")
 
     # encoder representation evaluation
     prediction_dev, label_dev = read_data(
         Path(cfg.path.exp_folder) / "dev_conf.json",
-        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.train{track}.json",
     )
     prediction_test, label_test = read_data(
         Path(cfg.path.exp_folder) / "test_conf.json",
-        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
+        Path(f"../test_listener_responses/CPC1.test{track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
@@ -112,11 +112,11 @@ def run(cfg: DictConfig) -> None:
     # decoder representation evaluation
     prediction_dev, label_dev = read_data(
         Path(cfg.path.exp_folder) / "dev_negent.json",
-        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.{'train'+track}.json",
+        Path(cfg.path.cpc1_train_data) / f"metadata/CPC1.train{track}.json",
     )
     prediction_test, label_test = read_data(
         Path(cfg.path.exp_folder) / "test_negent.json",
-        Path(f"../test_listener_responses/CPC1.{'test'+track}.json"),
+        Path(f"../test_listener_responses/CPC1.test{track}.json"),
     )
 
     logger.info("Apply logistic fitting.")
